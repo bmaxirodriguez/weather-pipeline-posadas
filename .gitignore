@@ -1,0 +1,7 @@
+# Ignorar carpetas de datos (el almacenamiento es local)
+Data/
+
+# Ignorar archivos temporales de Python y Jupyter
+__pycache__/
+.ipynb_checkpoints/
+.streamlit/

@@ -1,0 +1,7 @@
+pandas
+duckdb
+pyarrow
+requests
+folium
+streamlit
+streamlit-folium
