@@ -10,19 +10,18 @@ Este proyecto implementa un pipeline de datos (ETL) completo utilizando la \*\*A
 
 
 
-El proyecto emula un entorno empresarial de alto rendimiento de forma local utilizando \*\*DuckDB\*\* como motor de procesamiento analítico y \*\*Parquet\*\* como formato de almacenamiento eficiente (columnar y comprimido).
+El proyecto emula un entorno de forma local utilizando \*\*DuckDB\*\* como motor de procesamiento analítico y \*\*Parquet\*\* como formato de almacenamiento eficiente (columnar y comprimido).
 
 
 
-La lógica se divide en tres capas de datos:
+El proceso de ETL sigue la arquitectura Medallón:
 
 
+1\. \*\*Bronze (Raw data):\*\* Ingesta de datos en formato JSON desde la API pública de \*\*Open-Meteo\*\*. El dato se conserva sin modificaciones en archivos Parquet, añadiendo únicamente metadatos de control (`ingested\_at`) para garantizar la trazabilidad.
 
-1\. \*\*Bronze (Capa Cruda):\*\* Ingesta de datos en formato JSON desde la API pública de \*\*Open-Meteo\*\*. El dato se persiste sin modificaciones en archivos Parquet, añadiendo únicamente metadatos de control (`ingested\_at`) para garantizar la trazabilidad e idempotencia.
+2\. \*\*Silver (Clean data):\*\* Procesamiento con DuckDB para normalizar nombres de columnas a \*snake\_case\*, validación y casteo de tipos de datos (`TIMESTAMP`, `FLOAT`, `INT`), y filtrado de registros nulos.
 
-2\. \*\*Silver (Capa Limpia):\*\* Procesamiento con DuckDB para normalizar nombres de columnas a \*snake\_case\*, validación y casteo de tipos de datos (`TIMESTAMP`, `FLOAT`, `INT`), y filtrado de registros nulos.
-
-3\. \*\*Gold (Capa de Negocio):\*\* Agregación de datos y aplicación de reglas de negocio para clasificar alertas meteorológicas según umbrales de la región:
+3\. \*\*Gold (Business data):\*\* Agregación de datos y aplicación de reglas de negocio para clasificar alertas meteorológicas según umbrales de la región:
 
 &#x20;  \* 🔴 \*\*Calor Extremo:\*\* Temperatura ≥ 38.0 °C
 
@@ -66,13 +65,13 @@ La lógica se divide en tres capas de datos:
 
 ├── notebooks/
 
-│   ├── 1\_ingesta\_bronze.ipynb       # Extracción de API e Ingesta
+│   ├── 1\_ingesta\_bronze.ipynb       # Extracción de API e ingesta
 
-│   ├── 2\_procesamiento\_silver.ipynb # Limpieza y Normalización SQL
+│   ├── 2\_procesamiento\_silver.ipynb # Limpieza y normalización SQL
 
 │   └── 3\_analitica\_gold.ipynb       # Lógica de alertas y KPIs
 
-├── app.py                 # Dashboard Interactiva en Streamlit
+├── app.py                 # Dashboard nteractivo en Streamlit
 
 ├── requirements.txt       # Dependencias del proyecto
 
